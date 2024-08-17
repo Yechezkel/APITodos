@@ -13,18 +13,23 @@ namespace APITodos.Controllers
 {
     public class TodoesController : Controller
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient;
 
-        public TodoesController()
+        //public TodoesController()
+        //{
+
+        //}
+
+
+        public TodoesController(HttpClient httpClient)
         {
-           
+            _httpClient = httpClient;
         }
 
 
-        //public TodoesController(HttpClient httpClient)
-        //{
-        //    _httpClient = httpClient;
-        //}
+
+
+
 
         // GET: Todoes
         public async Task<IActionResult> Index()
@@ -33,7 +38,19 @@ namespace APITodos.Controllers
             return View(await GetPostsAsync());
         }
 
-        
+        public async Task<List<User>> GetPostsAsync()
+        {
+            var response = await _httpClient.GetAsync("https://dummyjson.com/users?select=firstName,id,lastName");
+            response.EnsureSuccessStatusCode();
+            var Users = await response.Content.ReadFromJsonAsync<UserList>();
+            return Users.Users;
+        }
+
+
+
+
+
+
 
         // GET: Todoes/Create
         public IActionResult Create()
@@ -46,39 +63,31 @@ namespace APITodos.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,firstName,lastName")] Todo todo)
+        public async Task<IActionResult> Create([Bind("id,firstName,lastName")] User todo)
         {
             if (ModelState.IsValid)
             {
                 CreatePostAsync(todo);
                 //await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Create));
+                return RedirectToAction(nameof(Index));
             }
             return View(todo);
         }
 
 
 
-
-
-        public async Task<List<Todo>> GetPostsAsync()
-        {
-            var response = await _httpClient.GetAsync("https://dummyjson.com/docs/todos");
-            response.EnsureSuccessStatusCode();
-            var posts = await response.Content.ReadFromJsonAsync<List<Todo>>();
-            int i = 4;
-            return posts;
-        }
-
-
         
 
 
-        public async Task<Todo> CreatePostAsync(Todo newPost)
+
+
+
+
+        public async Task<User> CreatePostAsync(User newPost)
         {
-            var response = await _httpClient.PostAsJsonAsync("https://dummyjson.com/docs/todos", newPost);
+            var response = await _httpClient.PostAsJsonAsync("https://dummyjson.com/users?select=firstName,id,lastName", newPost);
             response.EnsureSuccessStatusCode();
-            var createdPost = await response.Content.ReadFromJsonAsync<Todo>();
+            var createdPost = await response.Content.ReadFromJsonAsync<User>();
             return createdPost;
         }
     }

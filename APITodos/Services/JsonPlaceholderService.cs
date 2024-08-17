@@ -12,31 +12,31 @@ namespace APITodos
             _httpClient = httpClient;
         }
 
-        public async Task<List<Todo>> GetPostsAsync()
+        public async Task<List<User>> GetPostsAsync()
         {
             var response = await _httpClient.GetAsync("https://dummyjson.com/docs/todos");
             response.EnsureSuccessStatusCode();
-            var posts = await response.Content.ReadFromJsonAsync<List<Todo>>();
+            var posts = await response.Content.ReadFromJsonAsync<List<User>>();
             return posts;
         }
 
-        public async Task<Todo> GetPostAsync(int id)
+        public async Task<User> GetPostAsync(int id)
         {
             var response = await _httpClient.GetAsync($"https://dummyjson.com/docs/todos/{id}");
             response.EnsureSuccessStatusCode();
-            var post = await response.Content.ReadFromJsonAsync<Todo>();
+            var post = await response.Content.ReadFromJsonAsync<User>();
             return post;
         }
 
-        public async Task<Todo> CreatePostAsync(Todo newPost)
+        public async Task<User> CreatePostAsync(User newPost)
         {
             var response = await _httpClient.PostAsJsonAsync("https://dummyjson.com/docs/todos", newPost);
             response.EnsureSuccessStatusCode();
-            var createdPost = await response.Content.ReadFromJsonAsync<Todo>();
+            var createdPost = await response.Content.ReadFromJsonAsync<User>();
             return createdPost;
         }
 
-        public async Task UpdatePostAsync(int id, Todo updatedPost)
+        public async Task UpdatePostAsync(int id, User updatedPost)
         {
             var response = await _httpClient.PutAsJsonAsync($"https://dummyjson.com/docs/todos/{id}", updatedPost);
             response.EnsureSuccessStatusCode();
